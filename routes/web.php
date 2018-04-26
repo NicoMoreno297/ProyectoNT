@@ -14,3 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/cuestionario', function () {
+    return view('cuestionario');
+});
+
+Route::post('/analisis', 'perfil@analizar_datos');
+
+Route::get('/preferencias/{preferencias}', function ($preferencias) {
+    return view('preferencias',['preferencias'=> $preferencias]);
+});
