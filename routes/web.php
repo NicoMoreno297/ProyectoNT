@@ -24,3 +24,13 @@ Route::post('/analisis', 'perfil@analizar_datos');
 Route::get('/preferencias/{preferencias}', function ($preferencias) {
     return view('preferencias',['preferencias'=> $preferencias]);
 });
+
+Route::get('/datos', function () {
+    return view('Datos');
+});
+
+Route::post('/seleccion','seleccion@seleccionarPelicula');
+
+Route::get('/listado', function () {
+    return view('listado');
+});
