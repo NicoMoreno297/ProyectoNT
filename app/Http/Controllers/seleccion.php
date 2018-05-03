@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 
 class seleccion extends Controller
 {
-    //
     function seleccionarPelicula(Request $request){
-		$persona=array("id"=>$request->input('id'),
-					   "edad"=>$request->input('edad'),
-					   "pref1"=>$request->input('pref1'),
-					   "pref2"=>$request->input('pref2'),
-					   "pref3"=>$request->input('pref3'));
-					   
+		
+		$persona=\App\perfilMD::where('idperfiles',$request->input('id'))
+								->pluck('edad'); 
+		$preferencia=\App\preferencia::where("idperfiles",$request->input('id'))
+								->pluck('idgenero'); 					   
 		$peliculas=array(
 						array("id"=>$request->input('id1'),
 							   "gen"=>$request->input('gen1'),
@@ -39,21 +37,28 @@ class seleccion extends Controller
 							   "gen"=>$request->input('gen6'),
 							   "cal"=>$request->input('cal6'),
 							   "sen"=>$request->input('sen6')));	
-		$final=$this->BuscarPelicula($persona, $peliculas);
+		$final=$this->BuscarPelicula($persona, $peliculas,$preferencia);
 		return view('listado',['listado'=>$final]);
 	}
 	
-	function BuscarPelicula($persona, $pelicula){
+	function BuscarPelicula($persona, $pelicula,$preferencia){
 		
 		$final=array();
 		foreach($pelicula as $p){
-			if($p['gen']==$persona['pref1'] || $p['gen']==$persona['pref2'] || $p['gen']==$persona['pref3'])
-				array_push($final, $p);
+			foreach($preferencia as $pr)
+				if($p['gen']==$pr)
+					array_push($final,$p);
 		}
 		$pelicula=$final;
 		$final=array();
 		foreach($pelicula as $p){
-			if($p['sen']<$persona['edad'])
+			if($p['sen']<$persona[0])
+				array_push($final,$p);
+		}
+		$pelicula=$final;
+		$final=array();
+		foreach($pelicula as $p){
+			if($p['cal']>=4)
 				array_push($final,$p);
 		}
 		return $final;
