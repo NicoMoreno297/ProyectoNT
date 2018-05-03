@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \App\perfilMD;
+use \App\usuario;
+
 
 class perfil extends Controller
 {
@@ -131,5 +134,25 @@ class perfil extends Controller
             }
         }
         return view('preferencias',['preferencias'=>$preferencias]);
-	}
+    }
+    function ingreso(Request $request)
+    {
+        $ing =new perfilMD;
+        $usu=new usuario;
+
+        $ing->nombre= $request->input("nombre");
+        $ing->edad= $request->input("edad");
+        $ing->save();
+        $id=\App\perfilMD :: where('nombre',$request->input('nombre'))
+        ->where('edad',$request->input('edad'))
+        ->pluck('idperfiles');
+
+        $usu->idperfiles=$id[0];
+        $usu->usuario= $request->input("usuario");
+        $usu->contrasena= $request->input("contra");
+
+        $usu->save();
+
+        return view('correcto');
+    }
 }

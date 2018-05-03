@@ -15,11 +15,18 @@ Route::get('/welcome2', function () {
     return view('welcome');
 });
 
+
 Route::get('/cuestionario', function () {
     return view('cuestionario');
 });
 
+Route::get('/ingreso', function () {
+    return view('ingreso');
+});
+
 Route::post('/analisis', 'perfil@analizar_datos');
+
+Route::post('/perfilbases', 'perfil@ingreso');
 
 Route::get('/preferencias/{preferencias}', function ($preferencias) {
     return view('preferencias',['preferencias'=> $preferencias]);
