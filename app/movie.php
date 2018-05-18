@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class genre extends Model
+class movie extends Model
 {
     public $timestamps=false;
 }
