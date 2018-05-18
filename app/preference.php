@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class usuario extends Model
+class preference extends Model
 {
     public $timestamps=false;
 }
