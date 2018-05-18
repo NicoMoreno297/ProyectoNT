@@ -233,6 +233,3 @@ class perfil extends Controller
 	}
 	
 }
-
-
-}
