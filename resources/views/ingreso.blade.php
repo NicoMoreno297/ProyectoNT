@@ -15,7 +15,7 @@
 <h3>Ingrese su edad:</h3>
 <input type="text" name="edad">
 <br><br>
-<input type="submit" value="Aceptar"> 
+<input type="submit" value="OK"> 
 </form> 
 </body>
 </html>
