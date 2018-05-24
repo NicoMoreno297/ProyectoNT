@@ -34,3 +34,6 @@ Route::get('/sugerir','perfilDP@seleccionarPelicula');
 Route::post('/validar','usuarioDP@validar');
 
 Route::get('/preferencias', 'questionDP@calcularPreferencias');
+
+Route::get('/ingreso', 'perfilDP@ingresar');
+Route::get('/salida', 'perfilDP@salir');
