@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use \App\perfilMD;
 use \App\usuario;
 
+use Session;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
 require '/config/facebook.php';
 require '/vendor/autoload.php';
 
@@ -228,53 +232,66 @@ class perfil extends Controller
         return view('correcto');
     }
 
-    function BuscarPelicula($persona, $pelicula,$preferencia){
-		
-		$final=array();
-		foreach($pelicula as $p){
-			foreach($preferencia as $pr)
-				if($p['gen']==$pr)
-					array_push($final,$p);
-		}
-		$pelicula=$final;
-		$final=array();
-		foreach($pelicula as $p){
-			if($p['sen']<=$persona[0])
-				array_push($final,$p);
-		}
-		$pelicula=$final;
-		$final=array();
-		foreach($pelicula as $p){
-			if($p['cal']>=4)
-				array_push($final,$p);
-		}
-		return $final;
-    }
-    
-    //selección de la película o serie que el usuario desee
+   //selección de la película o serie que el usuario desee
 	function seleccionarPelicula(Request $request){
 		
-		$persona=\App\perfil::where('id',Session::get('id',0))
-								->pluck('edad'); 
+		//$persona=\App\perfil::where('id',Session::get('id',0))
+			//					->pluck('edad'); 
 		$preferencia=\App\preference::where('idperfiles',Session::get('id',0))
 								->pluck('idgenero'); 
 		$preferencia=\App\genre::where('idgenero',$preferencia[0])
 									->pluck('nombre');
-		$peliculas=array(
-						array("id"=>1,
-							   "gen"=>'Comedia',
-							   "cal"=>5,
-							   "sen"=>15),
-						array("id"=>'id2',
-							   "gen"=>1,
-							   "cal"=>4,
-							   "sen"=>25),
-						array("id"=>'id3',
-							   "gen"=>1,
-							   "cal"=>3,
-							   "sen"=>17),);	
-		$final=$this->BuscarPelicula($persona, $peliculas,$preferencia);
+		$client=new Client();
+		
+		$i=rand(1,153);
+		
+		
+		//$pelis=array();
+		//for($i=1;$i<100;$i++){
+			//$pelicula=$client->get('https://tv-v2.api-fetch.website/movies/'.$i);
+			$pelicula=$client->get('https://tv-v2.api-fetch.website/movies/'.$i);
+			$contenido=$pelicula->getBody();		
+			//array_push($pelis,json_decode($contenido));
+		//}
+			
+			
+		//print_r(json_decode($contenido));
+		//return view('listado',['lista'=>json_decode($contenido)]);
+		//print_r(json_decode($contenido));
+		$final=$this->BuscarPelicula([json_decode($contenido)],$preferencia);
 		return view('sugerencia',['listado'=>$final]);
+	}
+	
+	function BuscarPelicula($pelicula,$preferencia){
+		
+		$final=array();
+		foreach($pelicula as $peli){
+			foreach($peli as $p){
+				if($p->rating->percentage>=70){
+					foreach($preferencia as $pr){
+						foreach($p->genres as $g)
+						{
+							if($g==$pr)
+								array_push($final,$p);
+						}
+					}
+				}
+			}
+		}
+		
+		
+		return $final;
+	}
+	
+	function verEntradas(){
+		
+		$client=new Client();
+		
+		$resultado=$client->get('https://tv-v2.api-fetch.website/movies/100/tt0112255');
+		$contenido=$resultado->getBody();		
+		
+		//print_r(json_decode($contenido));
+		return view('listado',['lista'=>json_decode($contenido)]);
 	}
 	
 }
