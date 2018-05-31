@@ -258,8 +258,13 @@ class perfil extends Controller
 		//print_r(json_decode($contenido));
 		//return view('listado',['lista'=>json_decode($contenido)]);
 		//print_r(json_decode($contenido));
-		$final=$this->BuscarPelicula([json_decode($contenido)],$preferencia);
-		return view('sugerencia',['listado'=>$final]);
+        $final=$this->BuscarPelicula([json_decode($contenido)],$preferencia);
+        $img=array();
+        foreach($final as $f)
+        {
+            array_push($f->images->poster);
+        }
+		return view('sugerencia',['listado'=>$final,'imagenes'=>$img]);
 	}
 	
 	function BuscarPelicula($pelicula,$preferencia){
